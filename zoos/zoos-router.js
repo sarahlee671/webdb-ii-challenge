@@ -1,6 +1,7 @@
 const knex = require('knex');
 
 const router = require('express').Router();
+const Zoos = require('./zoos-model.js')
 
 const knexConfig = {
   client: 'sqlite3',
@@ -13,7 +14,8 @@ const knexConfig = {
 const db = knex(knexConfig);
 
 router.get('/', (req, res) => {
-  db('zoos')
+  Zoos.find()
+  // db('zoos')
     .then(zoos => {
       res.status(200).json(zoos);
     })
@@ -23,9 +25,10 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  db('zoos')
-    .where({id: req.params.id})
-    .first()
+  // db('zoos')
+  //   .where({id: req.params.id})
+  //   .first()
+  Zoos.findById(req.params.id)
     .then(zoo => {
       if (zoo) {
         res.status(200).json(zoo);
@@ -39,8 +42,10 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  db('zoos').insert(req.body, 'ids').then(ids => {
-      res.status(201).json(req.body)
+  Zoos.insert(req.body, 'id')
+  // db('zoos').insert(req.body, 'ids')
+  .then(ids => {
+      res.status(201).json(ids)
   })
   .catch(error => {
     res.status(500).json(error)
@@ -49,9 +54,9 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const changes = req.body;
-  db('zoos')
-  .where({id: req.params.id})
-  .update(changes)
+  // db('zoos')
+  // .where({id: req.params.id})
+  Zoos.update(req.params.id, changes)
   .then(zoo => {
       res.status(200).json({changes})
 
@@ -62,9 +67,9 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  db('zoos')
-    .where({id: req.params.id})
-    .del()
+  // db('zoos')
+  //   .where({id: req.params.id})
+    Zoos.remove(req.params.id)
     .then(count => {
       if (count > 0) {
         const unit = count > 1 ? 'records': 'record';
