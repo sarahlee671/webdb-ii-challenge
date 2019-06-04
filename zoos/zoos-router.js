@@ -22,13 +22,14 @@ router.get('/', (req, res) => {
     })
 })
 
-// router.get('/:id', (req, res) => {
 
-// })
-
-router.post('/', (req, res) => {
-  db('zoos').insert(req.body, 'ids').then(ids => {
-      res.status(201).json(req.body)
+router.put('/:id', (req, res) => {
+  const changes = req.body;
+  db('zoos')
+  .where({id: req.params.id})
+  .update(changes)
+  .then(zoo => {
+      res.status(200).json({changes})
   })
   .catch(error => {
     res.status(500).json(error)
